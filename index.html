@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automação Pro - Reduza Processos Repetitivos com I.A.</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles & Animations -->
+    <style>
+        /* Use Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff; /* Pure white for a crisper, more premium feel */
+            color: #1f2937; /* Darker gray for better contrast */
+        }
+
+        /* Smooth scrolling behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animation for elements fading in on scroll */
+        .fade-in-on-scroll {
+            opacity: 0;
+            transform: translateY(30px); /* Increased translate for a more noticeable effect */
+            transition: opacity 0.8s cubic-bezier(0.215, 0.610, 0.355, 1), transform 0.8s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+
+        .fade-in-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Custom blue color configuration for Tailwind */
+        .bg-brand-blue { background-color: #2563eb; }
+        .text-brand-blue { color: #2563eb; }
+        .border-brand-blue { border-color: #2563eb; }
+        .hover\:bg-brand-blue-dark:hover { background-color: #1d4ed8; }
+        .ring-brand-blue { ring-color: #2563eb; }
+        
+        /* Accordion icon transition */
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        details[open] .accordion-icon {
+            transform: rotate(135deg);
+        }
+
+        /* Subtle background pattern for hero */
+        .hero-pattern {
+            background-image: radial-gradient(#dbeafe 1px, transparent 1px);
+            background-size: 2rem 2rem;
+        }
+
+        /* Gemini suggestion card style */
+        .suggestion-card {
+            background-color: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        .suggestion-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+        }
+
+        /* Loading spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- ========== HEADER ========== -->
+    <header class="bg-white/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-200/80">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#" class="text-2xl font-bold text-brand-blue">Automação Pro</a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-10">
+                    <a href="#features" class="text-gray-600 hover:text-brand-blue transition-colors text-base font-medium">Funcionalidades</a>
+                    <a href="#why-us" class="text-gray-600 hover:text-brand-blue transition-colors text-base font-medium">Por que Nós</a>
+                    <a href="#testimonials" class="text-gray-600 hover:text-brand-blue transition-colors text-base font-medium">Depoimentos</a>
+                    <a href="#faq" class="text-gray-600 hover:text-brand-blue transition-colors text-base font-medium">FAQ</a>
+                </div>
+                
+                <!-- Desktop CTA -->
+                <div class="hidden md:block">
+                    <a href="#cta" class="bg-brand-blue text-white px-6 py-3 rounded-lg font-semibold text-base hover:bg-brand-blue-dark transition-all shadow-sm hover:shadow-blue-200 hover:-translate-y-0.5 transform">
+                        Agendar Diagnóstico
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-brand-blue p-2 -mr-2">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-6 pt-4 pb-6 space-y-4">
+                <a href="#features" class="block text-gray-700 hover:text-brand-blue transition-colors py-2 text-lg">Funcionalidades</a>
+                <a href="#why-us" class="block text-gray-700 hover:text-brand-blue transition-colors py-2 text-lg">Por que Nós</a>
+                <a href="#testimonials" class="block text-gray-700 hover:text-brand-blue transition-colors py-2 text-lg">Depoimentos</a>
+                <a href="#faq" class="block text-gray-700 hover:text-brand-blue transition-colors py-2 text-lg">FAQ</a>
+                <a href="#cta" class="mt-6 block w-full text-center bg-brand-blue text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-brand-blue-dark transition-all shadow-sm">
+                    Agendar Diagnóstico
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="pt-20"> <!-- Padding top to offset fixed header -->
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden hero-pattern">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-40">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16 items-center">
+                    <!-- Hero Text -->
+                    <div class="text-center lg:text-left fade-in-on-scroll is-visible">
+                        <span class="inline-block bg-blue-100 text-brand-blue text-base font-semibold px-5 py-2 rounded-full mb-6">+50 empresas atendidas</span>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 !leading-tight mb-6">
+                            Reduza 70% do Tempo em Processos Repetitivos com Automação I.A
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-xl mx-auto lg:mx-0">
+                            Consultoria especializada para empresas que querem crescer sem contratar mais pessoas.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <a href="#cta" class="bg-brand-blue text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-brand-blue-dark transition-all shadow-lg hover:shadow-blue-300 transform hover:-translate-y-1">
+                                Agendar Diagnóstico
+                            </a>
+                            <a href="#features" class="bg-white text-gray-800 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all border border-gray-300">
+                                Saiba Mais
+                            </a>
+                        </div>
+                        <p class="mt-10 text-base text-gray-500 font-semibold tracking-wide">"300% ROI médio em 6 meses"</p>
+                    </div>
+                    
+                    <!-- Hero Image -->
+                    <div class="relative fade-in-on-scroll is-visible [transition-delay:200ms]">
+                        <div class="absolute -inset-4 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-3xl opacity-30 blur-3xl"></div>
+                        <img src="https://placehold.co/600x450/e0e7ff/3730a3?text=Dashboard+de+Automação" 
+                             alt="Dashboard de automação mockup" 
+                             class="rounded-2xl shadow-2xl shadow-blue-200/50 relative w-full h-auto border-4 border-white">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Credibility Logos -->
+        <section class="py-16 bg-slate-50 fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-center text-gray-500 font-semibold mb-8">PARCEIROS TECNOLÓGICOS DE CONFIANÇA</p>
+                <div class="flex justify-center md:justify-around items-center gap-10 md:gap-16 flex-wrap">
+                    <img src="https://placehold.co/160x48/f3f4f6/6b7280?text=Microsoft+Partner" alt="Microsoft Partner Logo" class="h-9 md:h-11 object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"/>
+                    <img src="https://placehold.co/160x48/f3f4f6/6b7280?text=AWS+Certified" alt="AWS Certified Logo" class="h-9 md:h-11 object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"/>
+                    <img src="https://placehold.co/160x48/f3f4f6/6b7280?text=Google+Cloud+Partner" alt="Google Cloud Partner Logo" class="h-9 md:h-11 object-contain filter grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"/>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-24 md:py-32 fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                    <!-- Main Feature -->
+                    <div class="pr-0 lg:pr-12">
+                        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Diagnóstico Completo e Personalizado.</h2>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Analisamos todos os seus processos e criamos um plano de automação para identificar os maiores pontos de alavancagem, garantindo o máximo impacto.
+                        </p>
+                        <img src="https://placehold.co/500x350/e0e7ff/4338ca?text=Análise+de+Processos" alt="Análise de processos e plano personalizado" class="rounded-xl shadow-lg w-full h-auto">
+                    </div>
+
+                    <!-- Feature Cards -->
+                    <div class="space-y-10">
+                        <div class="flex items-start p-6 rounded-xl transition-shadow">
+                            <img src="https://placehold.co/64x64/dbeafe/2563eb?text=⚙️" class="w-12 h-12 mr-6 rounded-lg bg-blue-100 p-2" alt="Ícone de implementação simples">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Implementação Simples</h3>
+                                <p class="text-lg text-gray-600">Configuramos tudo sem complicação técnica, usando ferramentas intuitivas e de baixo custo.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-6 rounded-xl transition-shadow">
+                            <img src="https://placehold.co/64x64/dbeafe/2563eb?text=🎓" class="w-12 h-12 mr-6 rounded-lg bg-blue-100 p-2" alt="Ícone de treinamento completo">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Treinamento Completo</h3>
+                                <p class="text-lg text-gray-600">Ensinamos sua equipe a usar as novas ferramentas para que todos se sintam confiantes e produtivos.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-6 rounded-xl transition-shadow">
+                            <img src="https://placehold.co/64x64/dbeafe/2563eb?text=🤝" class="w-12 h-12 mr-6 rounded-lg bg-blue-100 p-2" alt="Ícone de suporte técnico">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Suporte Técnico</h3>
+                                <p class="text-lg text-gray-600">Oferecemos acompanhamento contínuo por 6 meses para garantir que os resultados sejam sustentáveis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section id="why-us" class="py-24 md:py-32 bg-slate-50 fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Por que escolher a Automação Pro?</h2>
+                    <p class="text-xl text-gray-600 mb-16">
+                        Nossa abordagem combina expertise técnica com um foco incansável em resultados de negócio.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Pillar 1 -->
+                    <div class="bg-white p-8 rounded-xl text-center border border-slate-200 hover:border-brand-blue hover:shadow-xl hover:-translate-y-2 transition-all">
+                        <img src="https://placehold.co/80x80/dbeafe/2563eb?text=🏆" class="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-100 p-3" alt="Ícone de especialista experiente">
+                        <h3 class="text-2xl font-bold mb-3">Especialista Experiente</h3>
+                        <p class="text-gray-600 text-base">Mais de 5 anos automatizando empresas de diversos setores com sucesso.</p>
+                    </div>
+                    <!-- Pillar 2 -->
+                    <div class="bg-white p-8 rounded-xl text-center border border-slate-200 hover:border-brand-blue hover:shadow-xl hover:-translate-y-2 transition-all">
+                        <img src="https://placehold.co/80x80/dbeafe/2563eb?text=📈" class="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-100 p-3" alt="Ícone de resultados comprovados">
+                        <h3 class="text-2xl font-bold mb-3">Resultados Comprovados</h3>
+                        <p class="text-gray-600 text-base">Nossos clientes triplicam o retorno sobre o investimento em apenas 6 meses.</p>
+                    </div>
+                    <!-- Pillar 3 -->
+                    <div class="bg-white p-8 rounded-xl text-center border border-slate-200 hover:border-brand-blue hover:shadow-xl hover:-translate-y-2 transition-all">
+                        <img src="https://placehold.co/80x80/dbeafe/2563eb?text=💡" class="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-100 p-3" alt="Ícone de método exclusivo">
+                        <h3 class="text-2xl font-bold mb-3">Método Exclusivo</h3>
+                        <p class="text-gray-600 text-base">Sistema testado e validado em mais de 50 empresas para garantir eficiência.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gemini API Section -->
+        <section id="gemini-feature" class="py-24 md:py-32 fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Descubra o Potencial da Automação</h2>
+                    <p class="text-xl text-gray-600 mb-10">
+                        Não tem certeza por onde começar? Descreva um processo manual e nossa I.A. irá sugerir como automatizá-lo em segundos.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-2xl shadow-blue-100 border border-gray-200/80">
+                    <label for="process-description" class="block text-lg font-semibold text-gray-800 mb-3">Descreva o processo repetitivo:</label>
+                    <textarea id="process-description" rows="4" class="w-full p-4 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition" placeholder="Ex: Copiar dados de faturas em PDF e colar em uma planilha do Excel toda semana."></textarea>
+                    <button id="generate-suggestions-btn" class="mt-6 w-full bg-brand-blue text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-brand-blue-dark transition-all shadow-lg hover:shadow-blue-300 transform hover:-translate-y-1 flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        ✨ Gerar Sugestões com I.A.
+                    </button>
+                </div>
+                <div id="suggestions-result" class="mt-10">
+                    <!-- Gemini results will be injected here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Review Section -->
+        <section id="testimonials" class="py-24 md:py-32 bg-slate-50 fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">O que nossos clientes dizem</h2>
+                    <p class="text-xl text-gray-600 mb-16">
+                        Resultados reais de empresas que transformaram seus processos.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                        <div class="flex text-yellow-400 mb-5 text-lg">★★★★★</div>
+                        <p class="text-lg text-gray-700 italic mb-6">"Conseguimos automatizar 80% dos processos e economizar R$ 50 mil por mês."</p>
+                        <div class="flex items-center pt-6 border-t border-gray-200">
+                            <img src="https://placehold.co/48x48/e0e7ff/4338ca?text=MS" class="w-12 h-12 rounded-full mr-4" alt="Avatar de Maria Santos">
+                            <div>
+                                <p class="font-bold text-gray-900">Maria Santos</p>
+                                <p class="text-sm text-gray-500">Diretora da TechCorp</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 lg:scale-105 lg:shadow-2xl">
+                        <div class="flex text-yellow-400 mb-5 text-lg">★★★★★</div>
+                        <p class="text-lg text-gray-700 italic mb-6">"Reduzimos 65% do tempo em processos administrativos em apenas 3 meses."</p>
+                        <div class="flex items-center pt-6 border-t border-gray-200">
+                            <img src="https://placehold.co/48x48/e0e7ff/4338ca?text=JS" class="w-12 h-12 rounded-full mr-4" alt="Avatar de João Silva">
+                            <div>
+                                <p class="font-bold text-gray-900">João Silva</p>
+                                <p class="text-sm text-gray-500">CEO da LogiPro</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                        <div class="flex text-yellow-400 mb-5 text-lg">★★★★★</div>
+                        <p class="text-lg text-gray-700 italic mb-6">"O retorno foi imediato. Em 2 meses já tínhamos economizado mais que o investimento."</p>
+                        <div class="flex items-center pt-6 border-t border-gray-200">
+                            <img src="https://placehold.co/48x48/e0e7ff/4338ca?text=CM" class="w-12 h-12 rounded-full mr-4" alt="Avatar de Carlos Mendes">
+                            <div>
+                                <p class="font-bold text-gray-900">Diretor da AutoTech</p>
+                                <p class="text-sm text-gray-500">Carlos Mendes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-24 md:py-32 bg-slate-50 fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Perguntas Frequentes</h2>
+                    <p class="text-xl text-gray-600 mb-16">
+                        Tudo o que você precisa saber antes de começar.
+                    </p>
+                </div>
+                <div class="space-y-6">
+                    <!-- FAQ Item 1 -->
+                    <details class="group bg-white p-6 rounded-lg border border-gray-200/80">
+                        <summary class="flex justify-between items-center font-semibold text-xl cursor-pointer text-gray-900">
+                            Como funciona o diagnóstico inicial?
+                            <span class="accordion-icon text-brand-blue text-3xl font-light transform transition-transform">+</span>
+                        </summary>
+                        <p class="text-gray-600 text-base mt-4 pt-4 border-t border-gray-200">
+                            Fazemos uma análise completa em 2-3 dias para identificar onde você pode melhorar. Mapeamos seus processos atuais, identificamos gargalos e apresentamos um plano de ação claro com as oportunidades de automação.
+                        </p>
+                    </details>
+                    <!-- FAQ Item 2 -->
+                    <details class="group bg-white p-6 rounded-lg border border-gray-200/80">
+                        <summary class="flex justify-between items-center font-semibold text-xl cursor-pointer text-gray-900">
+                            Quanto tempo demora para implementar?
+                            <span class="accordion-icon text-brand-blue text-3xl font-light transform transition-transform">+</span>
+                        </summary>
+                        <p class="text-gray-600 text-base mt-4 pt-4 border-t border-gray-200">
+                            Normalmente entre 1 e 3 meses, dependendo da complexidade e do tamanho da empresa. Projetos mais simples podem ser concluídos em poucas semanas.
+                        </p>
+                    </details>
+                    <!-- FAQ Item 3 -->
+                    <details class="group bg-white p-6 rounded-lg border border-gray-200/80">
+                        <summary class="flex justify-between items-center font-semibold text-xl cursor-pointer text-gray-900">
+                            Preciso entender de tecnologia?
+                            <span class="accordion-icon text-brand-blue text-3xl font-light transform transition-transform">+</span>
+                        </summary>
+                        <p class="text-gray-600 text-base mt-4 pt-4 border-t border-gray-200">
+                            Não! Nós cuidamos de toda a parte técnica. Usamos ferramentas "no-code" ou "low-code" que são fáceis de usar, e fornecemos treinamento completo para sua equipe.
+                        </p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section id="cta" class="py-24 md:py-32 bg-brand-blue text-white fade-in-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                 <span class="inline-block bg-blue-500 text-white text-base font-semibold px-5 py-2 rounded-full mb-6">Transforme Sua Empresa Agora</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Pronto para Transformar sua Empresa?</h2>
+                <p class="text-xl text-blue-200 mb-10 max-w-3xl mx-auto">
+                    Agende sua consultoria gratuita e descubra como automatizar seus processos para aumentar a produtividade e reduzir custos.
+                </p>
+                <a href="#" class="bg-white text-brand-blue px-10 py-5 rounded-lg font-bold text-xl hover:bg-blue-50 transition-all shadow-2xl hover:shadow-white/50 transform hover:-translate-y-1.5">
+                    Agendar Diagnóstico Gratuito Agora
+                </a>
+                <div class="mt-10 flex justify-center items-center gap-x-8 gap-y-2 flex-wrap text-blue-200 text-base">
+                    <span class="flex items-center gap-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>100% Gratuito</span>
+                    <span class="flex items-center gap-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Resultados em 1-2 semanas</span>
+                    <span class="flex items-center gap-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Sem compromisso</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="bg-gray-900 text-gray-400">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col sm:flex-row justify-between items-center">
+                <p class="text-base mb-4 sm:mb-0">&copy; 2025 Automação Pro. Todos os direitos reservados.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+                    <a href="#" class="hover:text-white transition-colors">Instagram</a>
+                    <a href="#" class="hover:text-white transition-colors">Facebook</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu, Scroll Animations, and Gemini API -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Mobile menu toggle ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+
+            // --- Fade-in on scroll animation ---
+            const sections = document.querySelectorAll('.fade-in-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Gemini API Feature: Suggestion Generator ---
+            const generateBtn = document.getElementById('generate-suggestions-btn');
+            const processInput = document.getElementById('process-description');
+            const resultDiv = document.getElementById('suggestions-result');
+
+            generateBtn.addEventListener('click', async () => {
+                const userDescription = processInput.value.trim();
+                if (!userDescription) {
+                    resultDiv.innerHTML = `<p class="text-center text-red-600">Por favor, descreva um processo para receber sugestões.</p>`;
+                    return;
+                }
+
+                // Disable button and show loader
+                generateBtn.disabled = true;
+                resultDiv.innerHTML = '<div class="loader"></div>';
+
+                // --- Gemini API Call ---
+                const apiKey = ""; // API Key will be injected by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const prompt = `
+                    Você é um consultor especialista em automação de processos para pequenas e médias empresas. Um potencial cliente descreveu o seguinte processo manual: "${userDescription}".
+
+                    Com base nisso, gere 2 ou 3 sugestões curtas, práticas e claras de como esse processo poderia ser automatizado.
+                    Use uma linguagem profissional, mas acessível e otimista.
+                    O objetivo é mostrar o valor da automação e incentivar o contato.
+
+                    Formate a resposta estritamente em HTML da seguinte forma, sem adicionar \`\`\`html ou qualquer outro texto fora das tags:
+                    <div class="suggestion-card">
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Título da Automação 1</h4>
+                        <p class="text-gray-600">Descrição da primeira sugestão de automação. Explique como a tecnologia pode resolver o problema descrito.</p>
+                    </div>
+                    <div class="suggestion-card">
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Título da Automação 2</h4>
+                        <p class="text-gray-600">Descrição da segunda sugestão de automação. Mencione os benefícios, como economia de tempo ou redução de erros.</p>
+                    </div>
+                `;
+
+                const payload = {
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }]
+                };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        
+                        const generatedHtml = result.candidates[0].content.parts[0].text;
+                        resultDiv.innerHTML = generatedHtml;
+                    } else {
+                        throw new Error('Resposta da API inválida ou vazia.');
+                    }
+
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    resultDiv.innerHTML = `<p class="text-center text-red-600">Desculpe, ocorreu um erro ao gerar as sugestões. Por favor, tente novamente mais tarde.</p>`;
+                } finally {
+                    // Re-enable button
+                    generateBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
